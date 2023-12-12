@@ -14,7 +14,7 @@ return new class extends Migration {
             $table->id();
             $table->unsignedBigInteger('magazine_id')->index();
             $table->string('category_name', 50)->index();
-            $table->timestamps();
+            $table->timestamp('created_at')->useCurrent();
 
             $table->foreign('magazine_id')->references('id')->on('magazine')
                 ->cascadeOnDelete()->cascadeOnUpdate();
