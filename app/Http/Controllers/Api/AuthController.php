@@ -15,9 +15,10 @@ class AuthController extends Controller
     public function login(Request $request): JsonResponse
     {
         $validated = $request->validate([
-            'nis_nip'  => ['nullable', 'required_without_all:username,email', 'exclude_with:email', 'exclude_with:username'],
-            'email'    => ['nullable', 'required_without_all:username,nis_nip', 'exclude_with:username', 'exclude_with:nis_nip'],
-            'username' => ['nullable', 'required_without_all:email,nis_nip', 'exclude_with:email', 'exclude_with:nis_nip'],
+            'nisn'     => ['nullable', 'required_without_all:username,email,nis_nip', 'exclude_with:email', 'exclude_with:username', 'exclude_with:nis_nip'],
+            'nis_nip'  => ['nullable', 'required_without_all:username,email,nisn', 'exclude_with:email', 'exclude_with:username', 'exclude_with:nisn'],
+            'email'    => ['nullable', 'required_without_all:username,nis_nip,nisn', 'exclude_with:username', 'exclude_with:nis_nip', 'exclude_with:nisn'],
+            'username' => ['nullable', 'required_without_all:email,nis_nip,nisn', 'exclude_with:email', 'exclude_with:nis_nip', 'exclude_with:nisn'],
             'password' => ['required'],
         ]);
         if ($token = auth()->attempt($validated)) {

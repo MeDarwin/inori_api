@@ -27,6 +27,7 @@ class UserFactory extends Factory
             'username' => fake()->userName(),
             'email'    => fake()->unique()->safeEmail(),
             'nis_nip'  => fake()->unique()->numberBetween(1000, 999999999999999999),
+            'nisn'  => fake()->unique()->numberBetween(1000000000, 9999999999),
             'role'     => fake()->randomElement(['member', 'admin', 'club_leader', 'osis', 'club_mentor']),
             'password' => static::$password ??= Hash::make('password123'),
         ];

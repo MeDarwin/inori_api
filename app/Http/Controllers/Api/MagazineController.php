@@ -74,20 +74,24 @@ class MagazineController extends Controller
             ? response()->json(['message' => "Category `$request->id` deleted successfully"])
             : response()->json(['message' => "Category `$request->id` failed to delete"], 500);
     }
-    //TODO: CHECK FUNCTIONALITY OF ADMIN BYPASS
+
     /**
      * Add category to magazine
      */
     public function addCategory(Request $request)
     {
+        // Validate is category exists
         $validated = $request->validate([
             'category_name' => ['required', 'string', 'exists:category,name'],
         ]);
+        // Validate is magazine exists
         $magazine = Magazine::query()->findOrFail($request->id);
 
+        // Is user the creator of the magazine and bypass admin
         if ($magazine->creator_username !== $request->user()->username && $request->user()->role !== 'admin') {
             return response()->json(['message' => "Unable to update magazine as it is not yours"], 403);
         }
+        // Prevent duplication
         $isExist = MagazineCategory::query()
             ->where('magazine_id', $request->id)
             ->where('category_name', $validated['category_name'])
@@ -96,6 +100,7 @@ class MagazineController extends Controller
             return response()->json(['message' => "Category `" . $validated['category_name'] . "` already added to this magazine"], 403);
         }
 
+        // Define magazine category model to save
         $magCategory = MagazineCategory::query()->create(array_merge(['magazine_id' => $request->id], $validated));
         return $magCategory->save()
             ? response()->json(['message' => "Category `" . $validated['category_name'] . "` added successfully",])
@@ -107,16 +112,21 @@ class MagazineController extends Controller
      */
     public function removeCategory(Request $request)
     {
+        // Validate is category exists
         $validated = $request->validate([
             'category_name' => ['required', 'string', 'exists:category,name'],
         ]);
+        // Validate is magazine exists
         $magazine = Magazine::query()->findOrFail($request->id);
 
+        // Is user the creator of the magazine and bypass admin
         if ($magazine->creator_username !== $request->user()->username && $request->user()->role !== 'admin') {
             return response()->json(['message' => "Unable to update magazine as it is not yours"], 403);
         }
 
-        return $magazine->delete()
+        // Define magazine category model to delete
+        $magCategory = MagazineCategory::query()->create(array_merge(['magazine_id' => $request->id], $validated));
+        return $magCategory->delete()
             ? response()->json(['message' => "Category `" . $validated['category_name'] . "` deleted successfully"])
             : response()->json(['message' => "Category `" . $validated['category_name'] . "` failed to delete"], 500);
     }

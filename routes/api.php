@@ -42,6 +42,9 @@ Route::middleware('auth:api')->group(function () {
         Route::post('/', [DivisionController::class, 'store']);
         Route::put('/{id}', [DivisionController::class, 'update']);
         Route::delete('/{id}', [DivisionController::class, 'destroy']);
+
+        Route::post('/{id}', [DivisionController::class, 'addMember']);
+        Route::delete('/{id}', [DivisionController::class, 'removeMember']);
     });
 
     Route::prefix('/category')->middleware('role:admin')->group(function () {

@@ -12,10 +12,10 @@ return new class extends Migration {
     {
         Schema::create('user_division', function (Blueprint $table) {
             $table->id();
-            $table->string('username', 30)->index();
+            $table->string('user_username', 30)->index();
             $table->string('division_name', 50)->index();
 
-            $table->foreign('username')->references('username')->on('user')
+            $table->foreign('user_username')->references('username')->on('user')
                 ->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreign('division_name')->references('name')->on('division')
                 ->cascadeOnDelete()->cascadeOnUpdate();
