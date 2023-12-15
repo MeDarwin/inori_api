@@ -7,6 +7,7 @@ use App\Http\Requests\Magazine\MagazineRequest;
 use App\Models\Magazine;
 use App\Models\MagazineCategory;
 use Illuminate\Http\Request;
+use Storage;
 
 //TODO: Add update thumbnail method
 class MagazineController extends Controller
@@ -30,10 +31,16 @@ class MagazineController extends Controller
     public function store(MagazineRequest $request)
     {
         //TODO: Upload file upon creating
+        if ($thumbnail = $request->file('thumbnail')) {
+            $fileName = \Str::uuid() . '.' . $thumbnail->getClientOriginalExtension();
+            $thumbnail->storeAs('thumbnail', $fileName);
+        }
+        
         $magazine = Magazine::query()->create(
             array_merge(
                 $request->validated(),
-                ['creator_username' => $request->user()->username]
+                ['creator_username' => $request->user()->username],
+                ['thumbnail' => $fileName ?? null]
             ));
 
         return $magazine->save()

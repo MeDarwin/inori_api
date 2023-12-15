@@ -18,7 +18,7 @@ return new class extends Migration {
             $table->string('thumbnail', 100)->nullable();
             $table->string('title', 100);
             $table->text('body');
-            $table->string('footer');
+            $table->string('footer')->nullable();
             $table->timestamp('post_schedule')->useCurrent();
             $table->timestamp('created_at')->useCurrent();
 

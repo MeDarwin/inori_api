@@ -28,13 +28,12 @@ class MagazineRequest extends FormRequest
             'title'            => ['required', 'max:100', 'string'],
             'body'             => ['required', 'string'],
             'footer'           => ['nullable', 'string'],
-            'post_schedule'    => ['sometimes', 'nullable', 'date', 'date_format:Y-m-d H:i'],
+            'post_schedule'    => ['sometimes', 'required', 'date', 'date_format:Y-m-d H:i'],
         ];
     }
     public function after(): array
     {
         return [
-            // TODO: verified_by only be admin
             function (Validator $validator) {
                 $time = Carbon::parse($this->post_schedule);
                 $time->shiftTimezone('UTC'); // The timezone is set to Asia/Jakarta, set back to how it was requested

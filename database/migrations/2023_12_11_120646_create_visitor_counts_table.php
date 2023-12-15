@@ -15,7 +15,7 @@ return new class extends Migration {
             $table->timestamp('viewed_at')->useCurrent();
             $table->string('view_url', 100);
             $table->string('view_type', 100); //Home Page or else
-            $table->timestamp('visitor')->nullable();
+            $table->string('visitor')->nullable();
         });
     }
 

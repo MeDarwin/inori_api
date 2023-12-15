@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\DivisionController;
 use App\Http\Controllers\Api\MagazineController;
+use App\Http\Controllers\Api\VisitCountController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,6 +17,7 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
+Route::get('/record', [VisitCountController::class, 'logVisit']);
 
 Route::prefix('/auth')->group(function () {
     Route::post('/login', [AuthController::class, 'login']);
@@ -23,14 +25,17 @@ Route::prefix('/auth')->group(function () {
     Route::delete('/logout', [AuthController::class, 'logout']);
 });
 
+Route::prefix('/magazine')->group(function () {
+    Route::get('/', [MagazineController::class, 'get']);
+    Route::get('/{id}', [MagazineController::class, 'getOne']);
+});
+
 Route::middleware('auth:api')->group(function () {
     Route::prefix('/magazine')->group(function () {
-        Route::get('/', [MagazineController::class, 'get']);
-        Route::get('/{id}', [MagazineController::class, 'getOne']);
         Route::post('/', [MagazineController::class, 'store']);
         Route::put('/{id}', [MagazineController::class, 'update']);
         Route::delete('/{id}', [MagazineController::class, 'destroy']);
-        //TODO: Route::post('/{id}/thumbnail', [MagazineController::class, 'updateThumbnail']);
+        //TODO: Route::put('/{id}/thumbnail', [MagazineController::class, 'updateThumbnail']);
 
         Route::post('/{id}/category', [MagazineController::class, 'addCategory']);
         Route::delete('/{id}/category', [MagazineController::class, 'removeCategory']);
