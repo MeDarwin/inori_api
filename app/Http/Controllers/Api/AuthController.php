@@ -32,7 +32,7 @@ class AuthController extends Controller
     }
     public function getMe(Request $request): JsonResponse
     {
-        return response()->json(auth()->user());
+        return response()->json(auth()->user()->load('magazine'));
     }
     public function logout(): JsonResponse
     {

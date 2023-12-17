@@ -23,7 +23,7 @@ class CategoryController extends Controller
 
     public function getOne(Request $request)
     {
-        return response()->json(Category::with('magazine_category')->findOrFail($request->id));
+        return response()->json(Category::with('magazine')->findOrFail($request->id));
     }
 
     /**

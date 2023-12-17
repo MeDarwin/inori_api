@@ -21,7 +21,7 @@ class Magazine extends Model
      *
      * @var array
      */
-    protected $guarded = ['id','created_at'];
+    protected $guarded = ['id', 'created_at'];
 
     /**
      * Indicates if the model should be timestamped.
@@ -29,4 +29,9 @@ class Magazine extends Model
      * @var boolean
      */
     public $timestamps = false;
+
+    public function category()
+    {
+        return $this->belongsToMany(Category::class, 'magazine_category', 'magazine_id', 'category_name', 'id', 'name');
+    }
 }

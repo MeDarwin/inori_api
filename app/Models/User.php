@@ -87,4 +87,14 @@ class User extends Authenticatable implements JWTSubject
     {
         return [];
     }
+
+    /**
+     * Get all of the magazines that are assigned this user.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function magazine()
+    {
+        return $this->hasMany(Magazine::class, 'creator_username', 'username');
+    }
 }

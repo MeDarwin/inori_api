@@ -25,6 +25,11 @@ Route::prefix('/auth')->group(function () {
     Route::delete('/logout', [AuthController::class, 'logout']);
 });
 
+Route::prefix('/category')->group(function () {
+    Route::get('/', [CategoryController::class, 'get']);
+    Route::get('/{id}', [CategoryController::class, 'getOne']);
+});
+
 Route::prefix('/magazine')->group(function () {
     Route::get('/', [MagazineController::class, 'get']);
     Route::get('/{id}', [MagazineController::class, 'getOne']);
@@ -35,10 +40,17 @@ Route::middleware('auth:api')->group(function () {
         Route::post('/', [MagazineController::class, 'store']);
         Route::put('/{id}', [MagazineController::class, 'update']);
         Route::delete('/{id}', [MagazineController::class, 'destroy']);
-        //TODO: Route::put('/{id}/thumbnail', [MagazineController::class, 'updateThumbnail']);
+        
+        Route::middleware('role:admin')->group(function () {
+            Route::patch('/verify/{id}', [MagazineController::class, 'verify']);
+        });
 
         Route::post('/{id}/category', [MagazineController::class, 'addCategory']);
         Route::delete('/{id}/category', [MagazineController::class, 'removeCategory']);
+    });
+
+    Route::middleware('role:admin')->group(function () {
+        Route::get('/visit-count', [VisitCountController::class, 'getVisitLog']);
     });
 
     Route::prefix('/division')->group(function () {
@@ -53,8 +65,6 @@ Route::middleware('auth:api')->group(function () {
     });
 
     Route::prefix('/category')->middleware('role:admin')->group(function () {
-        Route::get('/', [CategoryController::class, 'get']);
-        Route::get('/{id}', [CategoryController::class, 'getOne']);
         Route::post('/', [CategoryController::class, 'store']);
         Route::put('/{id}', [CategoryController::class, 'update']);
         Route::delete('/{id}', [CategoryController::class, 'destroy']);

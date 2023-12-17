@@ -18,4 +18,14 @@ class VisitCountController extends Controller
             ? response()->json('view is recorded')
             : response()->json('view is failed to record', 500);
     }
+    public function getVisitLog(Request $request)
+    {
+        $visit = VisitorCount::query();
+        $all_view_type = $visit->groupBy('view_type')->get('view_type')->pluck('view_type');
+        $retVal = [];
+        foreach ($all_view_type as $view) {
+            $retVal[$view] = VisitorCount::query()->where('view_type', $view)->count();
+        }
+        return response()->json($retVal);
+    }
 }

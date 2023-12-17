@@ -7,9 +7,7 @@ use App\Http\Requests\Magazine\MagazineRequest;
 use App\Models\Magazine;
 use App\Models\MagazineCategory;
 use Illuminate\Http\Request;
-use Storage;
 
-//TODO: Add update thumbnail method
 class MagazineController extends Controller
 {
     /**
@@ -17,12 +15,15 @@ class MagazineController extends Controller
      */
     public function get(Request $request)
     {
-        return response()->json(Magazine::query()->get());
+        return response()->json(Magazine::with('category')->get());
     }
 
+    /**
+     * Get one Magazine
+     */
     public function getOne(Request $request)
     {
-        return response()->json(Magazine::query()->findOrFail($request->id));
+        return response()->json(Magazine::with("category")->findOrFail($request->id));
     }
 
     /**
@@ -30,12 +31,11 @@ class MagazineController extends Controller
      */
     public function store(MagazineRequest $request)
     {
-        //TODO: Upload file upon creating
         if ($thumbnail = $request->file('thumbnail')) {
             $fileName = \Str::uuid() . '.' . $thumbnail->getClientOriginalExtension();
             $thumbnail->storeAs('thumbnail', $fileName);
         }
-        
+
         $magazine = Magazine::query()->create(
             array_merge(
                 $request->validated(),
@@ -66,6 +66,25 @@ class MagazineController extends Controller
                 'updated' => $magazine->getChanges()
             ])
             : response()->json(['message' => "Magazine `$request->id` failed to update"], 500);
+    }
+
+    public function verify(Request $request)
+    {
+        $magazine = Magazine::query()->findOrFail($request->id);
+        if ($request->user()->role !== 'admin') {
+            return response()->json(['message' => "Unable to verify, not allowed"], 403);
+        }
+        if ($magazine->is_verified) {
+            return response()->json(['message' => "Magazine `$request->id` already verified"], 200);
+        }
+        $magazine->verified_by = $request->user()->username;
+        $magazine->is_verified = true;
+        return $magazine->save()
+            ? response()->json([
+                'message' => "Magazine `$request->id` verified successfully",
+                'updated' => $magazine->getChanges()
+            ])
+            : response()->json(['message' => "Magazine `$request->id` failed to verify"], 500);
     }
 
     /**
@@ -110,8 +129,8 @@ class MagazineController extends Controller
         // Define magazine category model to save
         $magCategory = MagazineCategory::query()->create(array_merge(['magazine_id' => $request->id], $validated));
         return $magCategory->save()
-            ? response()->json(['message' => "Category `" . $validated['category_name'] . "` added successfully",])
-            : response()->json(['message' => "Category `" . $validated['category_name'] . "` failed to add"], 500);
+            ? response()->json(['message' => "Category `" . $validated['category_name'] . "` added successfully to this magazine",])
+            : response()->json(['message' => "Category `" . $validated['category_name'] . "` failed to add to this magazine"], 500);
     }
 
     /**
@@ -132,9 +151,12 @@ class MagazineController extends Controller
         }
 
         // Define magazine category model to delete
-        $magCategory = MagazineCategory::query()->create(array_merge(['magazine_id' => $request->id], $validated));
+        $magCategory = MagazineCategory::query()
+            ->where('magazine_id', $request->id)
+            ->where('category_name', $validated['category_name'])
+            ->firstOrFail();
         return $magCategory->delete()
-            ? response()->json(['message' => "Category `" . $validated['category_name'] . "` deleted successfully"])
-            : response()->json(['message' => "Category `" . $validated['category_name'] . "` failed to delete"], 500);
+            ? response()->json(['message' => "Category `" . $validated['category_name'] . "` deleted successfully from this magazine",])
+            : response()->json(['message' => "Category `" . $validated['category_name'] . "` failed to delete from this magazine"], 500);
     }
 }

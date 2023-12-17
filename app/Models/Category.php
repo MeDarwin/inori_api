@@ -56,7 +56,7 @@ class Category extends Model
      *
      * @return BelongsToMany
      */
-    public function magazine_category(): BelongsToMany
+    public function magazine(): BelongsToMany
     {
         return $this->belongsToMany(Magazine::class, 'magazine_category', 'category_name', 'magazine_id', 'name', 'id');
     }

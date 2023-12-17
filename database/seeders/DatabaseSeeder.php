@@ -65,6 +65,7 @@ class DatabaseSeeder extends Seeder
             'password' => Hash::make('password123'),
             'role'     => 'osis',
         ]);
+
         //Division lead user example
         \App\Models\User::factory()->create([
             'username' => 'div.lead.inori',
@@ -74,14 +75,31 @@ class DatabaseSeeder extends Seeder
             'password' => Hash::make('password123'),
             'role'     => 'member',
         ]);
+
+        //Magazine divisoin user example
+        \App\Models\User::factory()->create([
+            'username' => 'div.magazine.inori',
+            'nis_nip'  => '123456789018',
+            'nisn'     => '2122121218',
+            'email'    => 'div.magazine@example.com',
+            'password' => Hash::make('password123'),
+            'role'     => 'member',
+        ]);
         /* ------------------------------- USER SEEDER ------------------------------ */
 
         /* ------------------------------- DIVISION SEEDER ------------------------------ */
         \App\Models\Division::factory()->create([
-            'name' => 'magazine',
+            'name'          => 'magazine',
             'division_lead' => 'div.lead.inori',
-            'vision' => 'Making a good magazine for the club and entertain everyone with amazing content.',
-            'mission' => '1. To promote the club activities and members.\n2. To promote the club activities and members.\n3. To promote the club activities and members.',
+            'vision'        => 'Making a good magazine for the club and entertain everyone with amazing content.',
+            'mission'       => '1. To promote the club activities and members.\n2. To promote the club activities and members.\n3. To promote the club activities and members.',
+        ]);
+
+        /* -------------------------- USER DIVISION SEEDER -------------------------- */
+        \App\Models\UserDivision::factory()->create([
+            'id'            => 1,
+            'user_username' => 'div.magazine.inori',
+            'division_name' => 'magazine',
         ]);
     }
 }
