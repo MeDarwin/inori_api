@@ -1,0 +1,26 @@
+List role
+
+role admin : 
+- username : admin.inori
+- password : password123
+
+role member :
+- username : member.inori
+- password : password123
+
+role divisi magazine : 
+- username : div.magazine.inori
+- password : password123
+
+role mentor : 
+- username : mentor.inori
+- password : password123
+
+role ketua divisi : 
+- username : div.lead.inori
+- password : password123
+
+role ketua ekskul : 
+- username : leader.inori
+- password : password123
+
